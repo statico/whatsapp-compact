@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "WhatsApp Compact",
+  "version": "0.1.0",
+  "description": "Minimal, Discord-compact-style WhatsApp Web.",
+  "content_scripts": [
+    {
+      "matches": ["https://web.whatsapp.com/*"],
+      "css": ["compact.css"],
+      "js": ["compact.js"],
+      "run_at": "document_start"
+    }
+  ]
+}

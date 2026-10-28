@@ -1,0 +1,370 @@
+/* WhatsApp Compact — dense, Discord-compact-style WhatsApp Web.
+   WhatsApp classes are obfuscated; only ids, roles and data-testid are used.
+   Color rule: the UI is monochrome; author-name hues are the only color,
+   plus one indigo accent reserved for unread / selected / mentions. */
+
+:root {
+  --wc-rail: #070708;
+  --wc-side: #0c0d0f;
+  --wc-chat: #111214;
+  --wc-raised: #191a1e;
+  --wc-hover: #15161a;
+  --wc-line: #1f2024;
+  --wc-text: #dcdde1;
+  --wc-muted: #80848e;
+  --wc-accent: #7c86ff;
+  --wc-time-col: 54px;
+  --wc-line-strong: #3a3c42;
+  --wc-fs: 14px;    /* everything you read */
+  --wc-fs-sm: 12px; /* times, replies, labels, embeds */
+}
+
+/* ---------- type ---------- */
+body, body *:not(svg):not(path) {
+  font-family: system-ui, -apple-system, sans-serif !important;
+}
+* { scrollbar-width: thin; scrollbar-color: #26272c transparent; }
+
+/* ---------- palette (dark theme) ---------- */
+body.dark {
+  --WDS-surface-default: var(--wc-chat);
+  --WDS-background-wash-plain: var(--wc-side);
+  --WDS-background-wash-inset: var(--wc-side);
+  --WDS-systems-chat-background-wallpaper: var(--wc-chat);
+  --WDS-systems-chat-surface-tray: var(--wc-chat);
+  --WDS-surface-elevated-default: var(--wc-raised);
+  --WDS-background-elevated-wash-plain: var(--wc-raised);
+  --WDS-background-elevated-wash-inset: var(--wc-raised);
+  --WDS-components-surface-nav-bar: var(--wc-rail);
+  --WDS-surface-emphasized: var(--wc-raised);
+  --WDS-systems-bubble-surface-system: var(--wc-chat);
+  --WDS-app-wash: var(--wc-rail);
+  --WDS-accent: var(--wc-accent);
+  --WDS-content-action-emphasized: var(--wc-accent);
+  --WDS-content-external-link: var(--wc-accent);
+  --WDS-persistent-always-branded: var(--wc-accent);
+  --WDS-components-filter-surface-selected: #252845;
+  background: var(--wc-rail) !important;
+}
+body.dark header:has([data-testid=navbar-primary-section]) { background: var(--wc-rail) !important; }
+body.dark #side,
+body.dark #pane-side,
+body.dark header:has([data-testid=wa-wordmark]) { background: var(--wc-side) !important; }
+body.dark #main,
+body.dark [data-testid=conversation-header],
+body.dark [data-testid=compose-box] { background: var(--wc-chat) !important; }
+body.dark [data-testid=conversation-header] { border-bottom: 1px solid var(--wc-line); }
+body.dark #side { border-right: 1px solid var(--wc-line); }
+
+/* ---------- clutter ---------- */
+[data-testid^=conversation-background],       /* doodle wallpaper */
+[data-icon^=tail-],                            /* bubble tails */
+[data-testid=wa-wordmark],                     /* "WhatsApp" title */
+#side > span,                                  /* "notifications are off" nag */
+#side > div:has([data-testid=wa-logo]) {       /* "Get WhatsApp for Mac" */
+  display: none !important;
+}
+
+/* ---------- sidebar chrome ---------- */
+header:has([data-testid=wa-wordmark]) {
+  height: 44px !important;
+  min-height: 44px !important;
+  padding-block: 0 !important;
+}
+header:has([data-testid=wa-wordmark]) button { transform: scale(.8); }
+[data-testid=chat-list-search-container] { padding-block: 4px !important; height: auto !important; }
+[data-testid=chat-list-search-container] div:has(> div > span > svg) {
+  height: 30px !important;
+  border-radius: 6px !important;
+}
+[data-testid=chat-list-search-container] input { font-size: var(--wc-fs) !important; }
+#side > div:has([data-testid=filter-button]) { padding-block: 2px 6px !important; }
+#side button[role=tab] {
+  height: 22px !important;
+  min-height: 22px !important;
+  padding: 0 9px !important;
+  border-radius: 6px !important;
+}
+#side button[role=tab] * { font-size: var(--wc-fs-sm) !important; }
+
+/* ---------- chat list ----------
+   ponytail: rows keep WhatsApp's fixed 76/95px slots — the list is virtualized
+   with hard-coded heights (zoom / tall-pane / scrollTop overrides all break it),
+   so the slot is spent on a 2-line preview instead of whitespace. */
+#pane-side [data-testid=cell-frame-container] {
+  margin: 0 6px !important;
+  border-radius: 6px !important;
+}
+#pane-side [data-testid=cell-frame-container] { background: transparent !important; }
+#pane-side [role=row]:hover [data-testid=cell-frame-container] { background: var(--wc-hover) !important; }
+#pane-side [aria-selected=true] [data-testid=cell-frame-container],
+#pane-side [data-testid=cell-frame-container][aria-selected=true] { background: var(--wc-raised) !important; }
+
+/* 32px avatars, narrower avatar column */
+#pane-side [data-testid=cell-frame-container] > div:first-child { flex: 0 0 44px !important; width: 44px !important; }
+#pane-side [data-testid=cell-frame-container] > div:first-child > div {
+  padding: 0 0 0 6px !important;
+  transform: scale(.67);
+  transform-origin: left center;
+}
+#pane-side [data-testid=cell-frame-container] > div:last-child { padding-right: 10px !important; }
+
+#pane-side [data-testid=cell-frame-title] span {
+  font-size: var(--wc-fs) !important;
+  font-weight: 600 !important;
+  color: var(--wc-text);
+}
+#pane-side [data-testid=chat-list-timestamp] span {
+  font-size: var(--wc-fs-sm) !important;
+  font-variant-numeric: tabular-nums;
+}
+/* 2-line preview */
+#pane-side [data-testid=cell-frame-secondary] { margin-top: 1px !important; height: auto !important; }
+#pane-side [data-testid=cell-frame-secondary] > div { height: auto !important; }
+#pane-side [data-testid=last-msg-status] {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden !important;
+  white-space: normal !important;
+  height: auto !important;
+}
+#pane-side [data-testid=last-msg-status] * { display: inline !important; }
+#pane-side [data-testid=last-msg-status] svg { display: inline-block !important; vertical-align: -3px; }
+#pane-side [data-testid=last-msg-status] span {
+  white-space: normal !important;
+  font-size: var(--wc-fs) !important;
+  line-height: 19px !important;
+  color: var(--wc-muted);
+}
+#pane-side [data-testid=chatlist-panel-archived-button] { margin: 2px 0 !important; }
+#pane-side [data-testid=chatlist-panel-archived-button] [data-testid=cell-frame-container] { height: 30px !important; }
+#pane-side [data-testid=chatlist-panel-archived-button] span { font-size: var(--wc-fs) !important; color: var(--wc-muted); }
+#pane-side [data-testid=icon-unread-count] { min-width: 18px !important; height: 18px !important; font-size: var(--wc-fs-sm) !important; }
+
+/* community subgroups (AGI > channel): channel avatar only; community name
+   as a quiet prefix line, channel name with # */
+#pane-side [data-testid=subgroup-identity] > div:first-child { display: none !important; }
+#pane-side [data-testid=subgroup-identity] > div:last-child { position: static !important; }
+#pane-side [data-testid=cell-frame-label] { margin-top: 0 !important; }
+#pane-side [data-testid=cell-frame-label] > span {
+  font-size: var(--wc-fs-sm) !important;
+  color: var(--wc-muted);
+}
+#pane-side [data-testid=cell-frame-label] > span::after { content: " ›"; }
+#pane-side [data-testid=cell-frame-title] { margin-top: 0 !important; }
+#pane-side [data-testid=cell-frame-container]:has([data-testid=subgroup-identity]) [data-testid=cell-frame-title] > span::before {
+  content: "# ";
+  color: var(--wc-muted);
+  font-weight: 400;
+}
+
+/* ---------- conversation header + composer ---------- */
+[data-testid=conversation-header] {
+  height: 44px !important;
+  min-height: 44px !important;
+  padding-block: 0 !important;
+}
+[data-testid=conversation-header] img { transform: scale(.7); }
+[data-testid=conversation-header] button { transform: scale(.85); }
+[data-testid=conversation-info-header-chat-title],
+[data-testid=conversation-info-header-chat-title] span { font-size: var(--wc-fs) !important; font-weight: 600 !important; }
+[data-testid=chat-subtitle] span { font-size: var(--wc-fs-sm) !important; color: var(--wc-muted) !important; }
+
+[data-testid=compose-box] > span > div > div { padding: 0 16px 12px !important; min-height: 0 !important; }
+[data-testid=compose-box] > span > div > div > div {
+  border-radius: 8px !important;
+  background: var(--wc-raised) !important;
+  padding-block: 0 !important;
+  min-height: 40px !important;
+}
+[data-testid=compose-box] * { font-size: var(--wc-fs) !important; line-height: 19px !important; }
+
+/* ---------- messages: one flat line each ---------- */
+#main [data-testid^=conv-msg-] { padding: 0 !important; }
+#main .focusable-list-item {
+  padding: 0 16px !important;
+  margin: 0 !important;
+  justify-content: flex-start !important;
+}
+#main [role=row]:has([data-testid=msg-container]) .focusable-list-item:hover { background: var(--wc-hover); }
+#main [data-testid=msg-container] {
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+#main [data-testid=msg-container] > div,
+#main [data-testid=msg-container] > div > div {
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  max-width: none !important;
+}
+#main [data-testid=msg-container] div:has(> .copyable-text) { padding: 1px 0 !important; }
+
+/* sender avatars + per-group author headers: the line prefix replaces them */
+#main [data-testid=group-chat-profile-picture],
+#main [data-testid=msg-container] div:not([data-testid=quoted-message] *) > [data-testid=author] {
+  display: none !important;
+}
+
+/* "time  Name  text" — attrs set by compact.js */
+#main .copyable-text[data-wr-name] {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  column-gap: 8px;
+}
+#main .copyable-text[data-wr-name]::before,
+#main .copyable-text[data-wr-name]::after { line-height: 19px; }
+#main .copyable-text[data-wr-name]::before {
+  content: attr(data-wr-time);
+  order: 1;
+  width: var(--wc-time-col);
+  white-space: nowrap;
+  font-size: var(--wc-fs-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--wc-muted);
+  text-align: right;
+}
+#main .copyable-text[data-wr-name]::after {
+  content: attr(data-wr-name);
+  order: 2;
+  font-size: var(--wc-fs);
+  font-weight: 600;
+  color: hsl(var(--wr-hue, 220) 65% 72%);
+}
+/* everything before the text (reply, link preview, media) gets its own line */
+#main .copyable-text[data-wr-name] > div:not(:last-child) {
+  order: 0;
+  flex-basis: calc(100% - var(--wc-time-col) - 8px);
+  min-width: 0;
+  margin: 2px 0 1px calc(var(--wc-time-col) + 8px) !important;
+}
+#main .copyable-text[data-wr-name] > div:last-child {
+  order: 3;
+  flex: 1;
+  min-width: 0;
+}
+#main .copyable-text .selectable-text {
+  font-size: var(--wc-fs) !important;
+  line-height: 19px !important;
+  color: var(--wc-text);
+}
+/* link previews go under the text as a Discord-style embed */
+#main .copyable-text[data-wr-name] > div:not(:last-child):has([data-testid=link-preview-container]) { order: 4; margin: 4px 0 2px calc(var(--wc-time-col) + 8px) !important; }
+#main [data-testid=link-preview-container] {
+  max-width: 520px;
+  background: var(--wc-raised) !important;
+  border-left: 3px solid var(--wc-line-strong);
+  border-radius: 4px !important;
+}
+#main [data-testid=link-preview-container] > div { padding: 8px 12px !important; }
+#main [data-testid=link-preview-title] { font-size: var(--wc-fs) !important; line-height: 19px !important; color: var(--wc-text) !important; }
+#main [data-testid=link-description] span,
+#main [data-testid=url-element] span { font-size: var(--wc-fs-sm) !important; line-height: 16px !important; color: var(--wc-muted) !important; }
+/* captioned media: the whole bubble drops under the name line, caption under the media */
+#main .copyable-text[data-wr-name]:has([data-testid=media-url-provider]) { padding: 0 !important; max-width: none !important; }
+#main .copyable-text[data-wr-name]:has([data-testid=media-url-provider]) > div:last-child {
+  flex-basis: 100%;
+  width: auto !important;
+  max-width: 640px;
+  margin: 2px 0 0 calc(var(--wc-time-col) + 8px) !important;
+}
+#main .copyable-text[data-wr-name]:has([data-testid=media-url-provider]) > div:last-child > div:not([data-testid=image-thumb]) { width: auto !important; }
+#main .copyable-text[data-wr-name] div:has(> div > [data-testid^=image-caption]) { padding: 2px 0 0 !important; }
+/* the hidden author header still reserves padding above media */
+#main [data-testid=msg-container] div:has(> div > [data-testid=author]):has(+ [data-testid=image-thumb]) { display: none !important; }
+/* media/captions without a prefix line up with the message column */
+#main [data-testid=msg-container]:not(:has([data-wr-name])) { padding-left: calc(var(--wc-time-col) + 8px) !important; }
+
+/* reactions sit under the text column */
+#main [data-testid=addon-bubble-container] { margin: 6px 0 2px calc(var(--wc-time-col) + 2px) !important; }
+#main [data-testid=reaction-bubble] { transform: scale(.85); transform-origin: left top; }
+
+/* time/ticks live in the prefix; drop the bubble meta and its reserved spacer */
+#main div:has(> [data-testid=msg-meta]),
+#main .copyable-text .selectable-text + span { display: none !important; }
+
+/* replies: one truncated line above the message with a curved spine, like Discord */
+#main [data-testid=quoted-message] > div {
+  position: relative;
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+}
+#main [data-testid=quoted-message] > div::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--wc-time-col) / -2 - 6px);
+  width: calc(var(--wc-time-col) / 2);
+  top: 10px;
+  height: 11px;
+  border: 2px solid var(--wc-line-strong);
+  border-width: 2px 0 0 2px;
+  border-top-left-radius: 6px;
+}
+#main [data-testid=quoted-message] > div > span:first-child { display: none !important; }
+#main [data-testid=quoted-message] > div > div { padding: 0 !important; min-width: 0; }
+#main [data-testid=quoted-message] > div,
+#main [data-testid=quoted-message] > div > div { overflow: hidden; min-height: 0 !important; height: auto !important; }
+/* media thumbnail of the quoted message, and the empty spacer next to the author */
+#main [data-testid=quoted-message] > div > div + div,
+#main [data-testid=quoted-message] > div > div > div > :empty { display: none !important; }
+#main [data-testid=quoted-message] > div > div > div {
+  display: flex !important;
+  align-items: baseline;
+  gap: 2px;
+  min-width: 0;
+}
+#main [data-testid=quoted-message] > div > div > div > * { flex: none; padding: 0 !important; margin: 0 !important; }
+#main [data-testid=quoted-message] > div > div > div > :last-child {
+  flex: 1;
+  min-width: 0;
+  height: 18px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+#main [data-testid=quoted-message] > div > div > div > :last-child * { display: inline !important; white-space: nowrap !important; }
+#main [data-testid=quoted-message] * { font-size: var(--wc-fs-sm) !important; line-height: 18px !important; }
+#main [data-testid=quoted-message] img { max-height: 18px; width: auto !important; }
+#main [data-testid=quoted-message] svg { vertical-align: -2px; }
+#main [data-testid=quoted-message] [data-testid=author] + [data-testid=author] { display: none !important; }
+#main [data-testid=quoted-message] [data-testid=author] { flex: none !important; min-width: 0 !important; margin: 0 !important; padding: 0 4px 0 0 !important; }
+#main [data-testid=quoted-message] .selectable-text { font-size: var(--wc-fs-sm) !important; line-height: 18px !important; color: var(--wc-muted) !important; }
+
+/* system notices: muted centered text */
+#main [role=row]:not(:has([data-testid=msg-container])) .focusable-list-item > div,
+#main [role=row]:not(:has([data-testid=msg-container])) .focusable-list-item > div * {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  font-size: var(--wc-fs-sm) !important;
+  color: var(--wc-muted) !important;
+}
+#main [role=row]:not(:has([data-testid=msg-container])) [data-testid^=conv-msg-] { margin: 2px 0 !important; }
+
+/* date dividers (non-row children of the message list): hairline with the date on it */
+#main [data-testid=conversation-panel-messages] > div > div:not([role=row]):has(> div > span) {
+  background: linear-gradient(#2a2b30, #2a2b30) center / calc(100% - 32px) 1px no-repeat;
+  margin: 10px 0 4px !important;
+}
+#main [data-testid=conversation-panel-messages] > div > div:not([role=row]) > div:has(> span) {
+  background: var(--wc-chat) !important;
+  box-shadow: none !important;
+  padding: 0 8px !important;
+}
+#main [data-testid=conversation-panel-messages] > div > div:not([role=row]) > div > span {
+  font-size: var(--wc-fs-sm) !important;
+  font-weight: 600 !important;
+  color: var(--wc-muted) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #main *, #pane-side * { transition: none !important; }
+}
