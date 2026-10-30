@@ -248,7 +248,7 @@ header:has([data-testid=wa-wordmark]) button { transform: scale(.8); }
   flex: 1;
   min-width: 0;
 }
-#main .copyable-text .selectable-text {
+#main [data-testid=msg-container] .copyable-text .selectable-text {
   font-size: var(--wc-fs) !important;
   line-height: 19px !important;
   color: var(--wc-text);
@@ -286,7 +286,7 @@ header:has([data-testid=wa-wordmark]) button { transform: scale(.8); }
 
 /* time/ticks live in the prefix; drop the bubble meta and its reserved spacer */
 #main div:has(> [data-testid=msg-meta]),
-#main .copyable-text .selectable-text + span { display: none !important; }
+#main [data-testid=msg-container] .copyable-text .selectable-text + span { display: none !important; }
 
 /* replies: one truncated line above the message with a curved spine, like Discord */
 #main [data-testid=quoted-message] > div {
@@ -335,7 +335,7 @@ header:has([data-testid=wa-wordmark]) button { transform: scale(.8); }
 #main [data-testid=quoted-message] svg { vertical-align: -2px; }
 #main [data-testid=quoted-message] [data-testid=author] + [data-testid=author] { display: none !important; }
 #main [data-testid=quoted-message] [data-testid=author] { flex: none !important; min-width: 0 !important; margin: 0 !important; padding: 0 4px 0 0 !important; }
-#main [data-testid=quoted-message] .selectable-text { font-size: var(--wc-fs-sm) !important; line-height: 18px !important; color: var(--wc-muted) !important; }
+#main [data-testid=msg-container] [data-testid=quoted-message] .selectable-text { font-size: var(--wc-fs-sm) !important; line-height: 18px !important; color: var(--wc-muted) !important; }
 
 /* system notices: muted centered text */
 #main [role=row]:not(:has([data-testid=msg-container])) .focusable-list-item > div,
