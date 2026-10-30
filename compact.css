@@ -46,6 +46,9 @@ body.dark {
   --WDS-components-filter-surface-selected: #252845;
   background: var(--wc-rail) !important;
 }
+/* startup splash: the logo shimmer is a 250px box painted in the splash
+   color, which shows as grey boxes beside the logo; the logo still pulses */
+#wa_web_initial_startup ::after { content: none !important; }
 body.dark header:has([data-testid=navbar-primary-section]) { background: var(--wc-rail) !important; }
 body.dark #side,
 body.dark #pane-side,
