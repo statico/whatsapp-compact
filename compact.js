@@ -1,7 +1,7 @@
 // Split WhatsApp's "[9:07 PM, 10/27/2026] Name: " prefix into attributes
 // that compact.css renders as Discord-style "time  Name  message" lines.
 // Non-contacts arrive as phone numbers; WhatsApp shows their profile name
-// ("~ Igor") next to the number on the first message of a group, so we
+// ("~ Alex") next to the number on the first message of a group, so we
 // remember that pairing and use the name instead.
 const names = new Map();
 

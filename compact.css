@@ -145,7 +145,7 @@ header:has([data-testid=wa-wordmark]) button { transform: scale(.8); }
 #pane-side [data-testid=chatlist-panel-archived-button] span { font-size: var(--wc-fs) !important; color: var(--wc-muted); }
 #pane-side [data-testid=icon-unread-count] { min-width: 18px !important; height: 18px !important; font-size: var(--wc-fs-sm) !important; }
 
-/* community subgroups (AGI > channel): channel avatar only; community name
+/* community subgroups (Community > channel): channel avatar only; community name
    as a quiet prefix line, channel name with # */
 #pane-side [data-testid=subgroup-identity] > div:first-child { display: none !important; }
 #pane-side [data-testid=subgroup-identity] > div:last-child { position: static !important; }
